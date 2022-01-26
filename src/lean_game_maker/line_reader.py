@@ -41,6 +41,7 @@ class FileReader:
         if occ:
             self.translator.occ = occ
         self.filename = path
+        self.url = 'https://raw.githubusercontent.com/mmasdeu/topologygame/main/%s'%str(path)
         with open(str(path), 'r', encoding='utf8') as f:
             self.raw_text = f.read()
             f.seek(0)
@@ -74,7 +75,7 @@ class FileReader:
                 'name': self.name, 
                 'problemIndex': self.problemIndex, 
                 'objects' : self.objects,
-                'url' : "http://www.google.com" # DEBUG
+                'url' : "https://eloitor.github.io/lean-game-levels-web-editor/#url=%s"%self.url
             })
 
 
