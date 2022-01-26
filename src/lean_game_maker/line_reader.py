@@ -73,7 +73,8 @@ class FileReader:
         return copy.deepcopy({
                 'name': self.name, 
                 'problemIndex': self.problemIndex, 
-                'objects' : self.objects
+                'objects' : self.objects,
+                'url' : "http://www.google.com" # DEBUG
             })
 
 
