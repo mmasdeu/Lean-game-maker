@@ -12,8 +12,10 @@ version = "**"
 extra_files = "extras"
 intro = "path_to_the_intro_page"
 
-# The following two parameters need to be completed for the "View Source" functionality to work
+# The following parameter needs to be set for the "View Source" functionality to work
 repo_base_url = "https://raw.githubusercontent.com/mmasdeu/topologygame/main/" # Where to find the source files of the game
+
+# If this is set, when clicking on "View Source" the source code will be loaded into the web editor
 web_editor_url = "https://eloitor.github.io/lean-game-levels-web-editor/" # An url with a game-aware Lean web editor
 
 
