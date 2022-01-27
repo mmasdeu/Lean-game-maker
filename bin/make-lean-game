@@ -30,6 +30,9 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en'):
 
     name = game_config.get('name', 'Lean game')
     version = str(game_config.get('version', ''))
+    web_editor_url = game_config.get('web_editor_url','')
+    source_base_url = game_config.get('source_base_url','')
+    show_source = (web_editor_url != '') and (source_base_url != '')
     translator = Translator(locale, version)
 
     game_data = {
@@ -77,6 +80,11 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en'):
         for i, level_address in enumerate(world_config['levels']):
             print(f"\tlevel {i+1} ...", end="")
             level_data = file_reader.read_file(level_address, occ=f"{world_config['name']} level {i+1}")
+            # Append source url
+            if show_source:
+                level_data['url'] = web_editor_url + "#url=" + source_base_url + str(level_address)
+            else:
+                level_data['url'] = ""
             world_data['levels'].append(level_data)
             print(f"\r\tlevel {i+1} ... done")
 

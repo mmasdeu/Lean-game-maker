@@ -41,7 +41,6 @@ class FileReader:
         if occ:
             self.translator.occ = occ
         self.filename = path
-        self.url = 'https://raw.githubusercontent.com/mmasdeu/topologygame/main/%s'%str(path)
         with open(str(path), 'r', encoding='utf8') as f:
             self.raw_text = f.read()
             f.seek(0)
@@ -75,7 +74,6 @@ class FileReader:
                 'name': self.name, 
                 'problemIndex': self.problemIndex, 
                 'objects' : self.objects,
-                'url' : "https://eloitor.github.io/lean-game-levels-web-editor/#url=%s"%self.url
             })
 
 
@@ -95,7 +93,6 @@ class FileReader:
                 o.proof_hint = "sorry"
             o.textAfter  = "\n" + "\n".join(lines[o.lastProofLineNumber : ])
             o.height     = o.lastProofLineNumber - o.firstProofLineNumber + 1
-            # o.editorText = 'sorry' if (self.problemIndex == i) else self.translator.register(o.proof, True, True)
             o.editorText = o.proof_hint if (self.problemIndex == i) else self.translator.register(o.proof, True, True)
             o.lineOffset = o.firstProofLineNumber-1
 
@@ -111,7 +108,6 @@ class FileReader:
                     o.statement = temp[1:].strip() if temp[0] == ':' else temp
             except:
                 raise Exception(f'Failed to parse :\n{o.lean}')
-            
             o.translate(self.translator)
 
 
