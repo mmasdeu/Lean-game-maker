@@ -64,7 +64,7 @@ class FileReader:
                         self.normal_line_handler(self, line)
 
                 self.cur_line_nb += 1
-            
+
         if self.objects == []:
             raise Exception(f'The file "{path}" is empty.')
 
