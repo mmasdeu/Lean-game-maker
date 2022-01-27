@@ -1,5 +1,5 @@
 # Lean Game Maker usage guide
-See [lean-game-skeleton](https://github.com/kbuzzard/lean-game-skeleton) for a boilerplate to start making your game. 
+See [topologygame](https://github.com/mmasdeu/topologygame) for an example game.
 Read on to see more details.
 
 ## Configuration file
