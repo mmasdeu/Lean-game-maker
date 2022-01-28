@@ -15,4 +15,7 @@ See the [usage guide](https://github.com/mmasdeu/Lean-game-maker/blob/master/USA
 
 ## Acknowledgements
 
-This fork aims at adding new features to the great original project of [mpedramfar](https://github.com/mpedramfar/Lean-game-maker/). The first one is the addition of hinted proofs.
+This fork aims at adding new features to the great original project of [mpedramfar](https://github.com/mpedramfar/Lean-game-maker/):
+
+- Hinted proofs: parts of the proof are shown to the player, who only needs to complete the remaining sorry(s).
+- View Source: A new button that opens the source of the current level in a Lean Web Editor, to make it easy to modify and add new levels to a game.
