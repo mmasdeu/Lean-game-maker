@@ -29,10 +29,15 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en'):
 
 
     name = game_config.get('name', 'Lean game')
+    print(f'{name =}')
     version = str(game_config.get('version', ''))
+    print(f'{version =}')
     web_editor_url = game_config.get('web_editor_url','')
+    print(f'{web_editor_url =}')
     source_base_url = game_config.get('source_base_url','')
+    print(f'{source_base_url =}')
     show_source = (source_base_url != '')
+    print(f'{show_source =}')
     translator = Translator(locale, version)
 
     game_data = {
