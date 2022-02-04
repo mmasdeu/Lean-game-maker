@@ -15,7 +15,7 @@ from lean_game_maker.interactive_loader import InteractiveServer
 module_path = Path(lean_game_maker.__file__).parent
 interactive_path = module_path.parent / 'interactive_interface'
 
-def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en'):
+def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en',web_editor_url=None, source_base_url=None):
 
     outdir = outdir or 'html'
     Path(outdir).mkdir(exist_ok=True)
@@ -32,9 +32,9 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en'):
     print(f'{name =}')
     version = str(game_config.get('version', ''))
     print(f'{version =}')
-    web_editor_url = game_config.get('web_editor_url','')
+    web_editor_url = web_editor_url or game_config.get('web_editor_url','')
     print(f'{web_editor_url =}')
-    source_base_url = game_config.get('source_base_url','')
+    source_base_url = source_base_url or game_config.get('source_base_url','')
     print(f'{source_base_url =}')
     show_source = (source_base_url != '')
     print(f'{show_source =}')

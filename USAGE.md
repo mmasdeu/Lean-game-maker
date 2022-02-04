@@ -184,6 +184,8 @@ make-lean-game --locale=CODE
 to use translated content for the given language code.
 Of course these flags could be combined.
 
+Finally, the command-line options `--source_base_url` and `--web-editor-url` can be used to override the same parameters in `game_config.toml`. They control respectively the location of the source files and the Lean web editor, in order to make the "View source" functionality work.
+
 ## Internationalization
 
 After making the game, the project folder will contain a `locale`
