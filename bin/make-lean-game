@@ -83,7 +83,7 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en',web
                 world_data['parents'].append(i-1)
 
         for i, level_address in enumerate(world_config['levels']):
-            print(f"\tlevel {i+1} ...", end="")
+            print(f"\tlevel {i+1} ... ({level_address = })", end="")
             level_data = file_reader.read_file(level_address, occ=f"{world_config['name']} level {i+1}")
             # Append source url
             if show_source:
@@ -93,6 +93,7 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en',web
                     level_data['url'] = source_base_url + str(level_address)
             else:
                 level_data['url'] = ""
+            print(f"\t\t {level_data['url'] = }")
             world_data['levels'].append(level_data)
             print(f"\r\tlevel {i+1} ... done")
 
