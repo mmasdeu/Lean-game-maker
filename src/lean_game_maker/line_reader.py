@@ -45,9 +45,9 @@ class FileReader:
         self.filename = path
         with (urlopen(str(path)) if as_url else \
               open(str(path), 'r', encoding='utf8')) as f:
-            self.raw_text = f.read()
-            f.seek(0)
+            self.raw_text = ''
             for line in f:
+                self.raw_text += str(line) + '\n'
                 for reader in self.readers:
                     if reader.read(self, line):
                         if reader.__class__.__name__ == 'ProofBegin':
