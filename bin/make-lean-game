@@ -83,11 +83,8 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en',web
                     raise Exception("Parent ID must be smaller than the world ID.")
                 world_data['parents'].append(i-1)
 
-        try:
-            level_list = glob.glob(world_config['levels']) # Glob
-        except TypeError:
-            level_list = world_config['levels'] # List
-        for i, level_address in level_list
+        level_list = [lev for lev_list in [glob.glob(o) for o in world_config['levels']] for lev in lev_list]
+        for i, level_address in enumerate(level_list):
             print(f"\tlevel {i+1} ... ({level_address = })", end="")
             level_data = file_reader.read_file(level_address, occ=f"{world_config['name']} level {i+1}")
             # Append source url

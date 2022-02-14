@@ -42,7 +42,8 @@ levels = [
 name = "**name of the third world**"
 id = 3
 parents = [1, 2]
-levels = "path_to_level_folder/*.lean"
+levels = [
+	path_to_the_first_level, path_to_level_folder/*.lean"
 ]
 ```
 
