@@ -33,7 +33,8 @@ class FileReader:
         self.normal_line_handler = self.default_line_handler
         self.blank_line_handler = dismiss_line
 
-    def read_file(self, path: str, occ: str=None, as_url: bool=False) -> None:
+    def read_file(self, path: str, occ: str=None) -> None:
+        as_url = ('://' in path) # TODO: make this more robust
         if not as_url and not Path(path).exists():
             raise FileNotFoundError(f'The file "{path}" does not exist.')
 
