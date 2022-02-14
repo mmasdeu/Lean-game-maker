@@ -1,5 +1,6 @@
 from typing import Match, Callable, Optional, List, Type
 from pathlib import Path
+from urllib.request import urlopen
 import regex
 import copy
 
@@ -32,8 +33,8 @@ class FileReader:
         self.normal_line_handler = self.default_line_handler
         self.blank_line_handler = dismiss_line
 
-    def read_file(self, path: str, occ: str=None) -> None:
-        if not Path(path).exists():
+    def read_file(self, path: str, occ: str=None, as_url: bool=False) -> None:
+        if not as_url and not Path(path).exists():
             raise FileNotFoundError(f'The file "{path}" does not exist.')
 
         self.hard_reset()
@@ -41,7 +42,8 @@ class FileReader:
         if occ:
             self.translator.occ = occ
         self.filename = path
-        with open(str(path), 'r', encoding='utf8') as f:
+        with (urlopen(str(path)) if as_url else \
+              open(str(path), 'r', encoding='utf8')) as f:
             self.raw_text = f.read()
             f.seek(0)
             for line in f:
