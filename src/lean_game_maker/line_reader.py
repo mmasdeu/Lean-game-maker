@@ -47,6 +47,8 @@ class FileReader:
               open(str(path), 'r', encoding='utf8')) as f:
             self.raw_text = ''
             for line in f:
+                if hasattr(line, 'decode'):
+                    line = line.decode('utf-8')
                 self.raw_text += str(line) + '\n'
                 for reader in self.readers:
                     if reader.read(self, line):
