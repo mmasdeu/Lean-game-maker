@@ -3,6 +3,7 @@
 import distutils.dir_util
 from fire import Fire
 from pathlib import Path
+from glob import glob
 import jsonpickle
 import toml
 
@@ -82,7 +83,11 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en',web
                     raise Exception("Parent ID must be smaller than the world ID.")
                 world_data['parents'].append(i-1)
 
-        for i, level_address in enumerate(world_config['levels']):
+        try:
+            level_list = glob.glob(world_config['levels']) # Glob
+        except TypeError:
+            level_list = world_config['levels'] # List
+        for i, level_address in level_list
             print(f"\tlevel {i+1} ... ({level_address = })", end="")
             level_data = file_reader.read_file(level_address, occ=f"{world_config['name']} level {i+1}")
             # Append source url
@@ -100,7 +105,7 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en',web
         if world_data['levels']:
             game_data['worlds'].append(world_data)
         else:
-            raise Exception(f'World {w+1} has no levels.')
+            print(f'World {w+1} has no levels. Skipping it...')
 
     game_data['texts'] = translator.translated_texts
 
