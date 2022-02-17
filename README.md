@@ -7,11 +7,11 @@ The games built with this library work best in Chrome and Firefox.
 
 ## Installation
 
-See the [installation guide](https://github.com/mmasdeu/Lean-game-maker/blob/master/INSTALL.md).
+See the [installation guide](https://github.com/mpedramfar/Lean-game-maker/blob/master/INSTALL.md).
 
 ## Usage
 
-See the [usage guide](https://github.com/mmasdeu/Lean-game-maker/blob/master/USAGE.md).
+See the [usage guide](https://github.com/mpedramfar/Lean-game-maker/blob/master/USAGE.md).
 
 ## Acknowledgements
 
