@@ -49,7 +49,7 @@ class FileReader:
             for line in f:
                 if hasattr(line, 'decode'):
                     line = line.decode('utf-8')
-                self.raw_text += str(line) + '\n'
+                self.raw_text += str(line)
                 for reader in self.readers:
                     if reader.read(self, line):
                         if reader.__class__.__name__ == 'ProofBegin':
@@ -69,6 +69,10 @@ class FileReader:
 
                 self.cur_line_nb += 1
 
+            if self.raw_text != self.raw_text_good:
+                print(self.raw_text)
+                print(self.raw_text_good)
+                assert 0
         if self.objects == []:
             raise Exception(f'The file "{path}" is empty.')
 
@@ -78,7 +82,7 @@ class FileReader:
         return copy.deepcopy({
                 'name': self.name, 
                 'problemIndex': self.problemIndex, 
-                'objects' : self.objects,
+                'objects' : self.objects
             })
 
 

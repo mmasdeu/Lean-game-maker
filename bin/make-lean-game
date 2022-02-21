@@ -95,14 +95,15 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en',web
             level_data = file_reader.read_file(level_address, occ=f"{world_config['name']} level {i+1}")
             # Append source url
             if show_source:
-                if '://' in level_address: # TODO: make more robust
-                    level_data['url'] = web_editor_url + "#url=" + str(level_address)
-                elif web_editor_url != '':
-                    level_data['url'] = web_editor_url + "#url=" + source_base_url + str(level_address)
+                level_url = str(level_address)
+                if '://' not in level_address: # TODO: make more robust
+                    level_url = source_base_url + level_url
+                if web_editor_url == '':
+                    level_data['url'] = level_url
                 else:
-                    level_data['url'] = source_base_url + str(level_address)
+                    level_data['url'] = web_editor_url + "#url=" + level_url
             else:
-                level_data['url'] = ""
+                level_data['url'] = ''
             print(f"\t\t {level_data['url'] = }")
             world_data['levels'].append(level_data)
             print(f"\r\tlevel {i+1} ... done")
