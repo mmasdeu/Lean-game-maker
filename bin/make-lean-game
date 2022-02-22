@@ -20,7 +20,7 @@ def glob_with_url(path):
     if 'http' in path:
         return [path]
     else:
-        return glob(path)
+        return sorted(glob(path))
 
 def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en',web_editor_url=None, source_base_url=None):
 
