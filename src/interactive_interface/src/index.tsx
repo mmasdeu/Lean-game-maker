@@ -377,6 +377,7 @@ interface LevelData {
   objects: Array<ProvableObject|NonProvableObject>;
   problemIndex: number;
   isSolved?: boolean;
+  url: string;
 }
 
 interface WorldData {
@@ -1340,6 +1341,10 @@ class Game extends React.Component<GameProps, GameState> {
         <button className='ridge-button' disabled={ this.state.level == worldData.levels.length - 1 } 
           style={{ float: 'right', width: '20%', height: '100%' }}
           onClick={() => { this.gotoLevel.call(this, this.state.level + 1); }}> Next Level </button>
+        <button className='ridge-button' disabled={ levelData.url == "" }
+          style={{ float: 'right', width: '15%', height:'100%' }}
+          onClick={() => { window.open(levelData.url); }}> View source </button>
+
         {levelLabel}
       </div>
     );

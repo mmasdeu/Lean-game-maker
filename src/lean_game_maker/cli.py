@@ -1,6 +1,7 @@
 import distutils.dir_util
 from fire import Fire
 from pathlib import Path
+from glob import glob
 import jsonpickle
 import toml
 
@@ -13,7 +14,13 @@ from lean_game_maker.interactive_loader import InteractiveServer
 module_path = Path(lean_game_maker.__file__).parent
 interactive_path = module_path.parent / 'interactive_interface'
 
-def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en'):
+def glob_with_url(path):
+    if 'http' in path:
+        return [path]
+    else:
+        return sorted(glob(path))
+
+def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en',web_editor_url=None, source_base_url=None):
 
     outdir = outdir or 'html'
     Path(outdir).mkdir(exist_ok=True)
@@ -27,7 +34,15 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en'):
 
 
     name = game_config.get('name', 'Lean game')
+    print(f'{name =}')
     version = str(game_config.get('version', ''))
+    print(f'{version =}')
+    web_editor_url = web_editor_url or game_config.get('web_editor_url','')
+    print(f'{web_editor_url =}')
+    source_base_url = source_base_url or game_config.get('source_base_url','')
+    print(f'{source_base_url =}')
+    show_source = (source_base_url != '')
+    print(f'{show_source =}')
     translator = Translator(locale, version)
 
     game_data = {
@@ -72,16 +87,29 @@ def render_lean_project(outdir=None, nolib=False, devmode=False, locale='en'):
                     raise Exception("Parent ID must be smaller than the world ID.")
                 world_data['parents'].append(i-1)
 
-        for i, level_address in enumerate(world_config['levels']):
-            print(f"\tlevel {i+1} ...", end="")
+        level_list = [lev for lev_list in [glob_with_url(o) for o in world_config['levels']] for lev in lev_list]
+        for i, level_address in enumerate(level_list):
+            print(f"\tlevel {i+1} ... ({level_address = })", end="")
             level_data = file_reader.read_file(level_address, occ=f"{world_config['name']} level {i+1}")
+            # Append source url
+            if show_source:
+                level_url = str(level_address)
+                if '://' not in level_address: # TODO: make more robust
+                    level_url = source_base_url + level_url
+                if web_editor_url == '':
+                    level_data['url'] = level_url
+                else:
+                    level_data['url'] = web_editor_url + "#url=" + level_url
+            else:
+                level_data['url'] = ''
+            print(f"\t\t {level_data['url'] = }")
             world_data['levels'].append(level_data)
             print(f"\r\tlevel {i+1} ... done")
 
         if world_data['levels']:
             game_data['worlds'].append(world_data)
         else:
-            raise Exception(f'World {w+1} has no levels.')
+            print(f'World {w+1} has no levels. Skipping it...')
 
     game_data['texts'] = translator.translated_texts
 

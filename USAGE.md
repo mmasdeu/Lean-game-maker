@@ -1,5 +1,5 @@
 # Lean Game Maker usage guide
-See [lean-game-skeleton](https://github.com/kbuzzard/lean-game-skeleton) for a boilerplate to start making your game. 
+See [topologygame](https://github.com/mmasdeu/topologygame) for an example game.
 Read on to see more details.
 
 ## Configuration file
@@ -11,6 +11,13 @@ name = "**name of the game**"
 version = "**"
 extra_files = "extras"
 intro = "path_to_the_intro_page"
+
+# The following parameter needs to be set for the "View Source" functionality to work
+source_base_url = "https://raw.githubusercontent.com/mmasdeu/topologygame/main/" # Where to find the source files of the game
+
+# If this is set, when clicking on "View Source" the source code will be loaded into the web editor
+web_editor_url = "https://eloitor.github.io/lean-game-levels-web-editor/" # An url with a game-aware Lean web editor
+
 
 [[worlds]]
 name = "**name of the first world**"
@@ -36,9 +43,7 @@ name = "**name of the third world**"
 id = 3
 parents = [1, 2]
 levels = [
-	"path_to_the_first_level",
-	"path_to_the_second_level",
-	"path_to_the_third_level",
+	path_to_the_first_level, path_to_level_folder/*.lean"
 ]
 ```
 
@@ -176,6 +181,8 @@ make-lean-game --locale=CODE
 ```
 to use translated content for the given language code.
 Of course these flags could be combined.
+
+Finally, the command-line options `--source_base_url` and `--web-editor-url` can be used to override the same parameters in `game_config.toml`. They control respectively the location of the source files and the Lean web editor, in order to make the "View source" functionality work.
 
 ## Internationalization
 

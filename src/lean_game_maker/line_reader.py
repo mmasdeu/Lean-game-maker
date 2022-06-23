@@ -1,5 +1,6 @@
 from typing import Match, Callable, Optional, List, Type
 from pathlib import Path
+from urllib.request import urlopen
 import regex
 import copy
 
@@ -33,7 +34,8 @@ class FileReader:
         self.blank_line_handler = dismiss_line
 
     def read_file(self, path: str, occ: str=None) -> None:
-        if not Path(path).exists():
+        as_url = ('://' in path) # TODO: make this more robust
+        if not as_url and not Path(path).exists():
             raise FileNotFoundError(f'The file "{path}" does not exist.')
 
         self.hard_reset()
@@ -41,10 +43,13 @@ class FileReader:
         if occ:
             self.translator.occ = occ
         self.filename = path
-        with open(str(path), 'r', encoding='utf8') as f:
-            self.raw_text = f.read()
-            f.seek(0)
+        with (urlopen(str(path)) if as_url else \
+              open(str(path), 'r', encoding='utf8')) as f:
+            self.raw_text = ''
             for line in f:
+                if hasattr(line, 'decode'):
+                    line = line.decode('utf-8')
+                self.raw_text += str(line)
                 for reader in self.readers:
                     if reader.read(self, line):
                         if reader.__class__.__name__ == 'ProofBegin':
@@ -63,7 +68,7 @@ class FileReader:
                         self.normal_line_handler(self, line)
 
                 self.cur_line_nb += 1
-            
+
         if self.objects == []:
             raise Exception(f'The file "{path}" is empty.')
 
@@ -93,7 +98,6 @@ class FileReader:
                 o.proof_hint = "sorry"
             o.textAfter  = "\n" + "\n".join(lines[o.lastProofLineNumber : ])
             o.height     = o.lastProofLineNumber - o.firstProofLineNumber + 1
-            # o.editorText = 'sorry' if (self.problemIndex == i) else self.translator.register(o.proof, True, True)
             o.editorText = o.proof_hint if (self.problemIndex == i) else self.translator.register(o.proof, True, True)
             o.lineOffset = o.firstProofLineNumber-1
 
@@ -109,7 +113,6 @@ class FileReader:
                     o.statement = temp[1:].strip() if temp[0] == ':' else temp
             except:
                 raise Exception(f'Failed to parse :\n{o.lean}')
-            
             o.translate(self.translator)
 
 
