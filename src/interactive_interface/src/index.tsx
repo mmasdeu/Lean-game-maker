@@ -21,6 +21,7 @@ const showdown = require('showdown');
 let markdownConverter = new showdown.Converter({
   openLinksInNewWindow: true,
   literalMidWordUnderscores: true,
+  tables: true,
 });
 
 
