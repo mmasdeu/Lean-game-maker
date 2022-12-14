@@ -681,8 +681,9 @@ interface SideBarProps {
 interface SideBarState {
 }
 class SideBar extends React.Component<SideBarProps, SideBarState> {
-  sideBarData : ({ 
-            'tactics' : NonProvableObject[], 
+  sideBarData : ({
+  	    'symbols' : NonProvableObject[],
+            'tactics' : NonProvableObject[],
             'sortedStatements' : (ProvableObject|NonProvableObject)[][], // first dimension is the world number
             'examples' : ProvableObject[] 
           })[][];
@@ -693,16 +694,17 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
 
     let getSidebarContentsInLevel = (w: number, l: number) => { // Stuff within this level that should be put in the side bar
       let levelObjects = this.props.worlds[w].levels[l].objects;
-      let tactics = [], nonAxiomStatements = [], examples = [], axioms = [];
+      let symbols = [], tactics = [], nonAxiomStatements = [], examples = [], axioms = [];
 
       for(let i = 0; i < levelObjects.length; i++){
         if(levelObjects[i].sideBar == true){
-          if(levelObjects[i].type == "tactic"){
+	  if(levelObjects[i].type == "symbol"){
+	    symbols.push(levelObjects[i]);
+          } else if(levelObjects[i].type == "tactic"){
             tactics.push(levelObjects[i]);
           } else if(levelObjects[i].type == "example"){
             examples.push(levelObjects[i]);
-          } else if(levelObjects[i].type == "lemma" 
-                      || levelObjects[i].type == "theorem"){
+          } else if(levelObjects[i].type == "lemma" || levelObjects[i].type == "theorem"){
             nonAxiomStatements.push(levelObjects[i]);
           } else if(levelObjects[i].type == "axiom"){
             axioms.push(levelObjects[i]);
@@ -710,6 +712,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
         }
       }
       return {
+          'symbols' : symbols,
           'tactics' : tactics,
           'nonAxiomStatements' : nonAxiomStatements,
           'examples' :  examples,
@@ -719,6 +722,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
 
     let getSidebarContentsInWorld = (w: number) => { // Stuff within this world that should be put in the side bar
       let output = {
+        'symbols' : [],
         'tactics' : [],
         'statements' : [],
         'examples' :  [],
@@ -726,6 +730,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
 
       for(let l = 0; l < this.props.worlds[w].levels.length; l++){
         let curLevelData = getSidebarContentsInLevel(w, l);
+	output.symbols.push(...curLevelData.symbols);
         output.tactics.push(...curLevelData.tactics);
         output.examples.push(...curLevelData.examples);
         output.statements.push(...curLevelData.axioms);
@@ -752,9 +757,10 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       this.sideBarData[w] = new Array(worldData.levels.length).fill([]);
 
       // Level 0 :
-      let tactics = [], sortedStatements = new Array(this.props.worlds.length).fill([]), examples = [];
+      let symbols = [], tactics = [], sortedStatements = new Array(this.props.worlds.length).fill([]), examples = [];
       for(let w1 = 0; w1 < this.props.worlds.length; w1++){
         if(isParentOf(w1, w)){
+	  symbols.push(...worldSidebarData[w1].symbols);
           tactics.push(...worldSidebarData[w1].tactics);
           examples.push(...worldSidebarData[w1].examples);
           sortedStatements[w1] = worldSidebarData[w1].statements;
@@ -762,9 +768,11 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       }
 
       let curLevelData = getSidebarContentsInLevel(w, 0), prevLevelData;
+      symbols.push(...curLevelData.symbols);
       tactics.push(...curLevelData.tactics);
       sortedStatements[w] = curLevelData.axioms;
       this.sideBarData[w][0] = {
+        'symbols' : symbols,
         'tactics' : tactics,
         'sortedStatements' : sortedStatements,
         'examples' : examples,
@@ -785,6 +793,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
         }
 
         this.sideBarData[w][l] = {
+	    'symbols' : this.sideBarData[w][l-1].symbols.concat(curLevelData.symbols),
             'tactics' : this.sideBarData[w][l-1].tactics.concat(curLevelData.tactics),
             'sortedStatements' : sortedStatements,
             'examples' :  this.sideBarData[w][l-1].examples.concat(prevLevelData.examples),
@@ -816,13 +825,37 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       );
     };
 
+    const sideBarAccordionList = (label, list) => {
+      if(list.length == 0)
+        return;
+      let tempDiv = document.createElement("div");
+      tempDiv.innerHTML = markdownConverter.makeHtml(label);
+      let markedLabel = tempDiv.children[0].innerHTML; // remove the <p></p> from the showdown output
+      return (
+        <AccordionItem key={label}>
+          <AccordionItemHeading>
+            <AccordionItemButton>
+              <div style={{display: "inline-block"}} dangerouslySetInnerHTML={{__html: markedLabel}}></div>
+            </AccordionItemButton>
+          </AccordionItemHeading>
+          {list.map(s => <AccordionItemPanel>{s}</AccordionItemPanel>)}
+        </AccordionItem>
+      );
+    };
+
     let data = {
+      'symbols' : [],
       'tactics' : [],
       'sortedStatements' : [],
       'examples' : []
     };
     data = this.sideBarData[this.props.world][this.props.level];
 
+
+    //const symbolsAccordion = sideBarAccordion("Symbols", data.symbols.map((s, i) => {
+   //   return sideBarAccordion(s.name, [<Text key={"symbol,text,"+i} content={getGameText(s.content)} />]);
+      // }));
+      const symbolsAccordion = sideBarAccordionList("Symbols", data.symbols.map((s, i) => getGameText(s.content)));
 
     const tacticsAccordion = sideBarAccordion("Tactics", data.tactics.map((s, i) => {
       return sideBarAccordion(s.name, [<Text key={"tactic,text,"+i} content={getGameText(s.content)} />]);
@@ -852,12 +885,13 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       }));
     })) : null;
 
-    if(!tacticsAccordion && !statementsAccordion && !examplesAccordion)
+    if(!symbolsAccordion && !tacticsAccordion && !statementsAccordion && !examplesAccordion)
       return null;
 
     return (
       <div style={{fontSize: "small", overflowY: "auto", height: "100%", overflowX: "hidden"}}>
         <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+	  {symbolsAccordion}
           {tacticsAccordion}
           {statementsAccordion}
           {examplesAccordion}

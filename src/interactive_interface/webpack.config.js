@@ -20,6 +20,7 @@ module.exports = {
         path: distDir,
         filename: 'interactive.js',
         publicPath: './',
+	hashFunction: "sha256"
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],

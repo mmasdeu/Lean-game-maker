@@ -47,6 +47,12 @@ class Hint(Text):
         self.content = translator.register(self.content, True)
         self.title = translator.register(self.title, True)
 
+@dataclass
+class Symbol(Text):
+    type: ClassVar[str] = 'symbol'
+    name: str = ''
+    sideBar: bool = True
+
 
 @dataclass
 class Tactic(Text):
@@ -200,6 +206,35 @@ class HintEnd(LineReader):
         file_reader.reset()
         return True
 
+class SymbolBegin(LineReader):
+    regex = regex.compile(r'\s*/-\s*Symbol\s*:\s*(.*)$', flags=regex.IGNORECASE)
+    def run(self, m: Match, file_reader: FileReader) -> bool:
+        if file_reader.status:
+            return False
+        file_reader.status = 'symbol'
+        # symbol = Symbol(sideBar=True)
+        # symbol.name = m.group(1).strip()
+        symbolname = m.group(1).strip()
+        # file_reader.objects.append(symbol)
+        def normal_line(file_reader: FileReader, line: str) -> None:
+            newsymbol = Symbol(sideBar=True)
+            newsymbol.name = symbolname
+            newsymbol.append(line)
+            file_reader.objects.append(newsymbol)
+
+        file_reader.normal_line_handler = normal_line
+        file_reader.blank_line_handler = normal_line
+        return True
+
+
+class SymbolEnd(LineReader):
+    regex = regex.compile(r'-/')
+
+    def run(self, m: Match, file_reader: FileReader) -> bool:
+        if file_reader.status != 'symbol':
+            return False
+        file_reader.reset()
+        return True
 
 class TacticBegin(LineReader):
     regex = regex.compile(r'\s*/-\s*Tactic\s*:\s*(.*)$', flags=regex.IGNORECASE)
@@ -423,6 +458,7 @@ class ProofHintEnd(LineReader):
 readers_list = [HiddenBegin, HiddenEnd,
     TextBegin, TextEnd,
     HintBegin, HintEnd,
+    SymbolBegin, SymbolEnd,
     TacticBegin, TacticEnd,
     AxiomBegin, AxiomEnd,
     ExampleBegin, ExampleEnd,

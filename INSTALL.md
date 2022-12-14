@@ -41,7 +41,7 @@ We will now prepare for a virtual environment dedicated to
 configure it:
 ```bash
 sudo apt install virtualenv python3-pip
-sudo -H pip3 install virtualenvwrapper
+sudo -H pip install virtualenvwrapper
 echo -e 'export WORKON_HOME=$HOME/.virtualenvs\nexport VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3\nsource /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc
 ```
 And then create a virtual environment for `lean_env` (after
@@ -58,8 +58,8 @@ Clone the repository. Inside the virtual environment and in the root folder of t
 ```bash
 cd src/interactive_interface
 npm install .
-./node_modules/.bin/webpack --mode=production
+NODE_OPTIONS=--openssl-legacy-provider ./node_modules/.bin/webpack --mode=production
 cd ../..
 
-pip3 install -e .
+pip install -e .
 ```

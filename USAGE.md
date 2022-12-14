@@ -146,6 +146,15 @@ will show the user already the beginning of the proof. At most one hint block ma
 
  * Note that the lean segment of different problems, the lines between `-/` and `begin`, must be distinct. Even if two problems are meant to be identical, this could be achieved by adding a space at the end of the lean segment of one of them. If two problems have identical lean segments, they will not be saved properly. (See "Version and saved games" below)
 
+Finally, one can compile a list of symbols to help the user remember how to input them. This is done by adding comments with the format
+```lean
+/- Symbol :
+∃ : \exists
+∀ : \forall
+-/
+```
+
+
 ## Making the game
 
 After preparing the configuration file and the Lean files, go to the root folder of your Lean project and run
